@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/search/:path*",
-      "destination": "https://duckduckgo.com*"
-    }
-  ]
-}
