@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
-  const secretKey = request.headers.get('x-admin-password');
-  const MASTER_PASSWORD = process.env.ADMIN_PASSWORD || 'MySuperSecretAdminPassword123';
+  const adminPassword = request.headers.get('x-admin-password');
 
-  if (secretKey !== MASTER_PASSWORD) {
-    return NextResponse.json({ error: `Unauthorized` }, { status: 401 });
+  // Verify your admin password (matches your environment variable or default)
+  if (adminPassword !== (process.env.ADMIN_PASSWORD || 'MySuperSecretAdminPassword123')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const logs = global.loginLogs || [];
-  return NextResponse.json({ logs });
+  return NextResponse.json({ logs: global.loginLogs || [] });
 }
